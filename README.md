@@ -42,10 +42,13 @@ It is used for method name.
 It can be omitted.
 
 #### rules:
-Hash of rules contain `conditions` and `proper`.
+`Hash` of rules contain `conditions` and `proper`.
+
 `conditions` is `Hash` of keys and the conditions.
+
 `conditions` can be nested.
 
+##### conditions:
 `Mathcer#match?` is used to match conditions.
 
 Use appropriate matching method for condition class.
@@ -56,11 +59,14 @@ Use appropriate matching method for condition class.
 | `String` | `#match?(value)` | only concrete_case is `Regexp` |
 | `Range` | `#cover?(value)` | - |
 | `Enumerable` | `#include?(value)` | - |
-| `Proc`, `Method` | `#call(value)` | it should returns true/false. |
-| `:any` (`Symbol`) | - | always true |
-| Others | `#==(value)` |  |
+| `Proc`, `Method` | `#call(value)` | it should returns `true`/`false`. |
+| `:any` (`Symbol`) | - | always `true` |
+| Others | `#==(value)` | - |
 
+##### proper:
 `proper` can be any objects.
+
+dispacher method dispatched this.
 
 ### obtains:
   Defined dispatching method that follow rules given.
