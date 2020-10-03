@@ -30,31 +30,34 @@ And then execute:
   }
 ```
 
-arguments:
-  label:
-    label is target of `dispatch`.
-    It is used for method name.
-    It can be omitted.
+### arguments:
+#### label:
+label is target of `dispatch`.
+It is used for method name.
+It can be omitted.
 
-  rules:
-    Hash of rules contain `conditions` and `proper`.
-    `conditions` is Hash of keys and the conditions.
-    `conditions` can be nested.
+#### rules:
+Hash of rules contain `conditions` and `proper`.
+`conditions` is Hash of keys and the conditions.
+`conditions` can be nested.
 
-    Mathcer#match? is used to match conditions.
-    Use appropriate matching method for condition class.
+`Mathcer#match?` is used to match conditions.
 
-      Regexp        ... using #match?(value)
-      Range         ... using #cover?(value)
-      Enumerable    ... using #include?(value)
-      Proc, Method  ... using #call(value), it should returns true/false.
-      :any (Symbol) ... always true
-      Hash          ... using Matcher#match? recursively
-      Others        ... uinsg #==(value)
+Use appropriate matching method for condition class.
 
-    `proper` can be any objects.
+| Object | matching method | description |
+| --- | --- | --- |
+| Regexp | `#match?(value)` | only concrete_case is String |
+| String | `#match?(value)` | only concrete_case is Regexp |
+| Range | `#cover?(value)` | - |
+| Enumerable | `#include?(value)` | - |
+| Proc, Method | `#call(value)` | it should returns true/false. |
+| :any (Symbol) | - | always true |
+| Others | `#==(value)` |  |
 
-obtains:
+`proper` can be any objects.
+
+### obtains:
   Defined dispatching method that follow rules given.
 
   It takes one Hash argument.
@@ -63,8 +66,7 @@ obtains:
   If more than one condition is matched,
   first one found will be dispatched.
 
-examples:
-===
+### examples:
 ```
 define_dispatcher rules: {
   { x: 10...20 } => 10,
