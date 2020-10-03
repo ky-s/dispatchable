@@ -21,13 +21,18 @@ And then execute:
 ## Usage
 
 ```
+module MyModule
   extend Dispatchable
 
-  define_dispatcher label, rules: {
+  define_dispatcher something, rules: {
     { conditions ... } => proper,
     { conditions ... } => proper,
     :
   }
+end
+
+MyModule.dispatch_something(concrete_case)
+# => returns dispatched proper
 ```
 
 ### arguments:
@@ -38,7 +43,7 @@ It can be omitted.
 
 #### rules:
 Hash of rules contain `conditions` and `proper`.
-`conditions` is Hash of keys and the conditions.
+`conditions` is `Hash` of keys and the conditions.
 `conditions` can be nested.
 
 `Mathcer#match?` is used to match conditions.
@@ -47,12 +52,12 @@ Use appropriate matching method for condition class.
 
 | Object | matching method | description |
 | --- | --- | --- |
-| Regexp | `#match?(value)` | only concrete_case is String |
-| String | `#match?(value)` | only concrete_case is Regexp |
-| Range | `#cover?(value)` | - |
-| Enumerable | `#include?(value)` | - |
-| Proc, Method | `#call(value)` | it should returns true/false. |
-| :any (Symbol) | - | always true |
+| `Regexp` | `#match?(value)` | only concrete_case is `String` |
+| `String` | `#match?(value)` | only concrete_case is `Regexp` |
+| `Range` | `#cover?(value)` | - |
+| `Enumerable` | `#include?(value)` | - |
+| `Proc`, `Method` | `#call(value)` | it should returns true/false. |
+| `:any` (`Symbol`) | - | always true |
 | Others | `#==(value)` |  |
 
 `proper` can be any objects.
@@ -60,11 +65,13 @@ Use appropriate matching method for condition class.
 ### obtains:
   Defined dispatching method that follow rules given.
 
-  It takes one Hash argument.
+  It takes one `Hash` argument.
   It is concrete case for apply rules.
 
   If more than one condition is matched,
   first one found will be dispatched.
+  
+  If any conditions are not matched, returns `nil`.
 
 ### examples:
 ```
