@@ -9,20 +9,84 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'dispatchable'
+gem "dispatchable", github: "ky-s/dispatchable", branch: "main"
+
 ```
 
 And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install dispatchable
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+  extend Dispatchable
+
+  define_dispatcher label, rules: {
+    { conditions ... } => proper,
+    { conditions ... } => proper,
+    :
+  }
+```
+
+arguments:
+  label:
+    label is target of `dispatch`.
+    It is used for method name.
+    It can be omitted.
+
+  rules:
+    Hash of rules contain `conditions` and `proper`.
+    `conditions` is Hash of keys and the conditions.
+    `conditions` can be nested.
+
+    Mathcer#match? is used to match conditions.
+    Use appropriate matching method for condition class.
+
+      Regexp        ... using #match?(value)
+      Range         ... using #cover?(value)
+      Enumerable    ... using #include?(value)
+      Proc, Method  ... using #call(value), it should returns true/false.
+      :any (Symbol) ... always true
+      Hash          ... using Matcher#match? recursively
+      Others        ... uinsg #==(value)
+
+    `proper` can be any objects.
+
+obtains:
+  Defined dispatching method that follow rules given.
+
+  It takes one Hash argument.
+  It is concrete case for apply rules.
+
+  If more than one condition is matched,
+  first one found will be dispatched.
+
+examples:
+===
+```
+define_dispatcher rules: {
+  { x: 10...20 } => 10,
+  { x: 20...30 } => 23,
+  { x: 30...40 } => 36,
+  { x: 40...50 } => 41,
+}
+
+extended_object.dispatch(x: 13)
+# => 10
+```
+
+```
+define_dispatcher "class", rules: {
+  { value: ->(val) { val.is_a?(Integer) } } => Integer,
+  { value: ->(val) { val.is_a?(Float)   } } => Float,
+  { value: ->(val) { val.is_a?(String)  } } => String
+}
+
+extended_object.dispatch_class(10)
+# => Integer
+```
 
 ## Development
 
