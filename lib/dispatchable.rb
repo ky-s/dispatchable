@@ -1,6 +1,7 @@
 require "dispatchable/version"
 
 module Dispatchable
+  class MatchingError < StandardError; end
   # Define dispatching method.
   #
   # usage:
@@ -88,7 +89,7 @@ module Dispatchable
 
   module Matcher
     def match?(condition, concrete_case)
-      # :any is always match rule
+      # :any is always match any rules.
       condition == :any and
         return true
 
@@ -104,6 +105,8 @@ module Dispatchable
         end
       end
 
+      # これで十分かどうかわからない
+      # 他にも考慮したほうがいいことがあるかも
       begin
         condition.kind_of?(Proc) ||
           condition.kind_of?(Method) and
@@ -122,9 +125,9 @@ module Dispatchable
         condition == concrete_case
 
       rescue => e
-        STDERR.puts("An error was occured at matching " +
-                    "(condition, value) = (#{condition.inspect}, #{concrete_case.inspect}). #{e}")
-        false
+        raise MatchingError,
+          "An error was occured at matching " +
+          "(condition, value) = (#{condition.inspect}, #{concrete_case.inspect}). #{e}"
       end
     end
 

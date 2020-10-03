@@ -63,4 +63,18 @@ class DispatchableTest < Minitest::Test
     assert_equal(-1, DispatchableModule.dispatch_test(x: 2,  y: { z: 10 }))
   end
 
+  def test_raise_matching_error
+    DispatchableModule.define_dispatcher :raise, rules: {
+      { x: ->(x) { x.no_method_error } } => :cannot_get_here
+    }
+
+    error = assert_raises(Dispatchable::MatchingError) {
+      DispatchableModule.dispatch_raise(x: 1)
+    }
+
+    assert_match(
+      /An error was occured at matching .*undefined method `no_method_error' for 1:Integer/,
+      error.message
+    )
+  end
 end
