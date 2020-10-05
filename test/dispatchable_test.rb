@@ -63,6 +63,17 @@ class DispatchableTest < Minitest::Test
     assert_equal(-1, DispatchableModule.dispatch_test(x: 2,  y: { z: 10 }))
   end
 
+  def test_simple_rules
+    DispatchableModule.define_dispatcher :simple, rules: {
+       1...10 =>  5,
+      10...20 => 15
+    }
+
+    assert_equal  5, DispatchableModule.dispatch_simple(1)
+    assert_equal  5, DispatchableModule.dispatch_simple(9.999999)
+    assert_equal 15, DispatchableModule.dispatch_simple(10)
+  end
+
   def test_raise_matching_error
     DispatchableModule.define_dispatcher :raise, rules: {
       { x: ->(x) { x.no_method_error } } => :cannot_get_here
