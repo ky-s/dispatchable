@@ -72,6 +72,24 @@ class DispatchableTest < Minitest::Test
     assert_equal  5, DispatchableModule.dispatch_simple(1)
     assert_equal  5, DispatchableModule.dispatch_simple(9.999999)
     assert_equal 15, DispatchableModule.dispatch_simple(10)
+    assert_nil DispatchableModule.dispatch_simple(20)
+  end
+
+  def test_how_to_match_any_symbol
+    DispatchableModule.define_dispatcher :any?, rules: {
+      # Proc or Method で :any を比較する
+      # ->(x) { x == :any } => true,
+      :any.method(:==)    => true,
+      :any                => false
+    }
+
+    # :any というシンボルなので true
+    assert DispatchableModule.dispatch_any?(:any)
+
+    # :any というシンボルでないので, :any キーワードにヒットして false
+    refute DispatchableModule.dispatch_any?('any')
+    refute DispatchableModule.dispatch_any?(100)
+    refute DispatchableModule.dispatch_any?(:not_any)
   end
 
   def test_raise_matching_error
